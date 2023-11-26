@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS employer CASCADE
+CREATE TABLE employer (id INTEGER PRIMARY KEY, name VARCHAR(50), url VARCHAR(30), vacancies_url VARCHAR(30), open_vacancies INTEGER)
