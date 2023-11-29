@@ -32,17 +32,24 @@ class DBManager:
 
     def employer_init(self, data, count):
         """Получаем массив с реквеста"""
-        for item in data['items']:
-            id = int(item['id'])
-            name = item['name']
-            url = item['alternate_url']
-            vacancies_url = item['vacancies_url']
+        try:
+            for item in data['items']:
+                id = int(item['id'])
+                name = item['name']
+                url = item['alternate_url']
+                vacancies_url = item['vacancies_url']
+                count_vacancies = count
+                inserting = "INSERT INTO employers(id, name, url, vacancies_url, open_vacancies) VALUES (%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING;"
+                self.cur.execute(inserting,(id, name, url, vacancies_url, count_vacancies))
+                self.conn.commit()
+        except (KeyError, TypeError):
+            id = int(data['id'])
+            name = data['name']
+            url = data['alternate_url']
+            vacancies_url = data['vacancies_url']
             count_vacancies = count
-            print(type(id))
-            print(id, name, url, vacancies_url, count_vacancies)
-            inserting = "INSERT INTO employers(id, name, url, vacancies_url, open_vacancies) VALUES (%s, %s, %s, %s, %s)"
+            inserting = "INSERT INTO employers(id, name, url, vacancies_url, open_vacancies) VALUES (%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING;"
             self.cur.execute(inserting,(id, name, url, vacancies_url, count_vacancies))
-            self.conn.commit()
 
     def vacancies_init(self, data):
         """Получаем массив с реквеста"""
@@ -59,7 +66,7 @@ class DBManager:
             published_at = self.str_date_conv(item['published_at'])
             url = item['alternate_url']
             employment = item['employment']['name']
-            inserting = "INSERT INTO vacancies (id, name, area, salary, published_at, employer_id, requirement, employment, url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            inserting = "INSERT INTO vacancies (id, name, area, salary, published_at, employer_id, requirement, employment, url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING"
             self.cur.execute(inserting,(id, name, area, salary, published_at, employer_id, requirement, employment, url))
             self.conn.commit()
 
@@ -71,7 +78,6 @@ class DBManager:
 
     def get_all_vacancies(self):
         """Просто получаем данные"""
-
         self.cur.execute("select * from vacancies")
         deta = self.cur.fetchall()
         return deta
@@ -101,6 +107,4 @@ class DBManager:
         :return:
         """
         format_date = datetime.strptime(data_str[:-5], "%Y-%m-%dT%H:%M:%S")
-
         return format_date
-
