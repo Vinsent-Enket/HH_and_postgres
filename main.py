@@ -4,6 +4,8 @@ from hh_responses_classes import Employer_response, Vacancies_response
 data_tabl = DBManager("asdasd")
 employers_first = [67611, 80, 1049556, 5724217, 39305 , 15478, 78638, 733,  2180, 3664,  5566914]
 for i in employers_first:
+    if data_tabl.check_employer(i) != None:
+        continue
     vacancies_data = Vacancies_response(req={'employer_id': i})
     data_tabl.employer_init(vacancies_data.employer_data, vacancies_data.count)
     data_tabl.vacancies_init(vacancies_data.data)

@@ -104,6 +104,12 @@ class DBManager:
         deta = self.cur.fetchall()
         return deta
 
+    def check_employer(self, id):
+        where_query = f"select * from employers where id=%s"
+        self.cur.execute(where_query, (id,))
+        deta = self.cur.fetchall()
+        return deta
+
     @staticmethod
     def str_date_conv(data_str):
         """
