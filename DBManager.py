@@ -95,7 +95,12 @@ class DBManager:
         user_answer = input("какое слово должно присутствовать в вакансии?\n -->")
         where_query = f"select * from vacancies where name ilike '%{user_answer}%'"
         self.cur.execute(where_query)
+        deta = self.cur.fetchall()
+        return deta
 
+    def get_vacancies_with_higher_salary(self):
+        where_query = f"select * from vacancies where salary > (select avg(salary) from vacancies)"
+        self.cur.execute(where_query)
         deta = self.cur.fetchall()
         return deta
 
